@@ -3,6 +3,7 @@ Name: mytheme
 ---
 SilverStripe\View\SSViewer:
   themes:
+    - 'travelogged'
     - '$public'
     - 'simple'
     - '$default'
