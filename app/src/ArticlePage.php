@@ -30,7 +30,7 @@ class ArticlePage extends Page
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
+        $fields = parent::getCMSFields(); // Retrieving the page's CMS Fields. For dataobject see Model/Region
         $fields->addFieldToTab('Root.Main', DateField::create('Date', 'Date of article'), 'Content');
         $fields->addFieldToTab('Root.Main', TextareaField::create('Teaser')
             ->setDescription('This is the summary that appears on the article list page.'),
