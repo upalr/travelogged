@@ -7,6 +7,8 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\Assets\Image;
 use SilverStripe\Assets\File;
 use SilverStripe\AssetAdmin\Forms\UploadField;
+use SilverStripe\Forms\CheckboxSetField;
+
 
 class ArticlePage extends Page
 {
@@ -26,6 +28,14 @@ class ArticlePage extends Page
     private static $owns = [
         'Photo',
         'Brochure',
+    ];
+
+    private static $has_many = [
+        'Comments' => ArticleComment::class,
+    ];
+
+    private static $many_many = [
+        'Categories' => ArticleCategory::class,
     ];
 
     public function getCMSFields()
@@ -52,6 +62,22 @@ class ArticlePage extends Page
             ->setFolderName('travel-brochures')
             ->getValidator()->setAllowedExtensions(array('pdf'));
 
+        $fields->addFieldToTab('Root.Categories', CheckboxSetField::create(
+            'Categories', //The name of the $many_many relation we're managing.
+            'Selected categories',
+            $this->Parent()->Categories()->map('ID', 'Title') // Parent means ArticleHolder
+        ));
+
         return $fields;
     }
+
+    public function CategoriesList()
+    {
+        if ($this->Categories()->exists()) { //We check the existence of categories with the exists() method. Simply checking the result of Categories() will not work, because it will at worst return an empty DataList object. It will never return false. We use exists() to check truthiness.
+            return implode(', ', $this->Categories()->column('Title'));
+        }
+
+        return null;
+    }
+
 }
