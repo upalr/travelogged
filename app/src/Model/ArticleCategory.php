@@ -21,7 +21,7 @@ class ArticleCategory extends DataObject
     ];
 
     private static $has_one = [
-        'ArticleHolder' => ArticleHolder::class,
+        'ArticleHolder' => ArticleHolder::class, // Reciprocate of has_one
     ];
 
     /*Lesson 10: Optional, but strongly recommended is a reciprocation of this relationship on the ArticleCategory object,

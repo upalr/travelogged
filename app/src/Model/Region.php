@@ -18,7 +18,7 @@ class Region extends DataObject
 
     private static $has_one = [
         'Photo' => Image::class,
-        'RegionsPage' => RegionsPage::class,
+        'RegionsPage' => RegionsPage::class, // Reciprocate of has_one
     ];
 
     private static $owns = [
