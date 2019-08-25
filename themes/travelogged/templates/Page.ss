@@ -6,7 +6,9 @@
 <html lang="en"> <!--<![endif]-->
 <head>
     <% base_tag %> <!-- DevC: insure that all the assets load relative to our project root. -->
-    $MetaTags
+    $MetaTags(false)
+    <title>One Ring Rentals: $Title</title>
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
