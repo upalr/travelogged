@@ -10,6 +10,7 @@ use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\ORM\ArrayLib;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\ORM\PaginatedList;
 
 
 class PropertySearchPageController extends PageController
@@ -29,7 +30,7 @@ class PropertySearchPageController extends PageController
 
         if ($arrival = $request->getVar('ArrivalDate')) {
             $arrivalStamp = strtotime($arrival);
-            $nightAdder = '+'.$request->getVar('Nights').' days';
+            $nightAdder = '+' . $request->getVar('Nights') . ' days';
             $startDate = date('Y-m-d', $arrivalStamp);
             $endDate = date('Y-m-d', strtotime($nightAdder, $arrivalStamp));
 
@@ -71,7 +72,7 @@ class PropertySearchPageController extends PageController
             ['MaxPrice', 'PricePerNight', 'LessThanOrEqual'],
         ];
 
-        foreach($filters as $filterKeys) {
+        foreach ($filters as $filterKeys) {
             list($getVar, $field, $filter) = $filterKeys;
             if ($value = $request->getVar($getVar)) {
                 $properties = $properties->filter([
@@ -80,9 +81,15 @@ class PropertySearchPageController extends PageController
             }
         }
 
+        $paginatedProperties = PaginatedList::create(
+            $properties,
+            $request
+        )
+            ->setPageLength(2)
+            ->setPaginationGetVar('s');;
 
         return [
-            'Results' => $properties
+            'Results' => $paginatedProperties
         ];
     }
 

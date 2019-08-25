@@ -1,4 +1,3 @@
-
 <!-- BEGIN CONTENT WRAPPER -->
 <div class="content">
     <div class="container">
@@ -10,7 +9,7 @@
                 <div id="listing-header" class="clearfix">
                     <div class="form-control-small">
                         <select id="sort_by" name="sort_by" data-placeholder="Sort by">
-                            <option value=""> </option>
+                            <option value=""></option>
                             <option value="data">Sort by Date</option>
                             <option value="area">Sort by Area</option>
                         </select>
@@ -18,8 +17,10 @@
 
                     <div class="sort">
                         <ul>
-                            <li class="active"><i data-toggle="tooltip" data-placement="top" title="Sort Descending" class="fa fa-chevron-down"></i></li>
-                            <li><i data-toggle="tooltip" data-placement="top" title="Sort Ascending" class="fa fa-chevron-up"></i></li>
+                            <li class="active"><i data-toggle="tooltip" data-placement="top" title="Sort Descending"
+                                                  class="fa fa-chevron-down"></i></li>
+                            <li><i data-toggle="tooltip" data-placement="top" title="Sort Ascending"
+                                   class="fa fa-chevron-up"></i></li>
                         </ul>
                     </div>
 
@@ -27,7 +28,8 @@
                         <span>View Mode:</span>
                         <ul>
                             <li data-view="grid-style1" data-target="property-listing"><i class="fa fa-th"></i></li>
-                            <li data-view="list-style" data-target="property-listing" class="active"><i class="fa fa-th-list"></i></li>
+                            <li data-view="list-style" data-target="property-listing" class="active"><i
+                                    class="fa fa-th-list"></i></li>
                         </ul>
                     </div>
                 </div>
@@ -35,52 +37,66 @@
                 <!-- BEGIN PROPERTY LISTING -->
                 <div id="property-listing" class="list-style clearfix"> <!-- Inject "grid-style1" for grid view-->
                     <div class="row">
-                        <% loop $Results %>
-                            <div class="item col-md-4">
-                                <div class="image">
-                                    <a href="$Link">
-                                        <span class="btn btn-default"><i class="fa fa-file-o"></i> Details</span>
-                                    </a>
-                                    $PrimaryPhoto.Fill(760,670)
-                                </div>
-                                <div class="price">
-                                    <span>$PricePerNight.Nice</span><p>per night<p>
-                                </div>
-                                <div class="info">
-                                    <h3>
-                                        <a href="$Link">$Title</a>
-                                        <small>$Region.Title</small>
-                                        <small>Available $AvailableStart.Nice - $AvailableEnd.Nice</small>
-                                    </h3>
-                                    <p>$Description.LimitSentences(3)</p>
+                        <% if $Results %>
+                            <h3>Showing $Results.PageLength results ($Results.getTotalItems total)</h3>
+                            <% loop $Results %>
+                                <div class="item col-md-4">
+                                    <div class="image">
+                                        <a href="$Link">
+                                            <span class="btn btn-default"><i class="fa fa-file-o"></i> Details</span>
+                                        </a>
+                                        $PrimaryPhoto.Fill(760,670)
+                                    </div>
+                                    <div class="price">
+                                        <span>$PricePerNight.Nice</span>
+                                        <p>per night
+                                        <p>
+                                    </div>
+                                    <div class="info">
+                                        <h3>
+                                            <a href="$Link">$Title</a>
+                                            <small>$Region.Title</small>
+                                            <small>Available $AvailableStart.Nice - $AvailableEnd.Nice</small>
+                                        </h3>
+                                        <p>$Description.LimitSentences(3)</p>
 
-                                    <ul class="amenities">
-                                        <li><i class="icon-bedrooms"></i> $Bedrooms</li>
-                                        <li><i class="icon-bathrooms"></i> $Bathrooms</li>
-                                    </ul>
+                                        <ul class="amenities">
+                                            <li><i class="icon-bedrooms"></i> $Bedrooms</li>
+                                            <li><i class="icon-bathrooms"></i> $Bathrooms</li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                        <% end_loop %>
+                            <% end_loop %>
+                        <% end_if %>
                     </div>
                 </div>
                 <!-- END PROPERTY LISTING -->
 
 
                 <!-- BEGIN PAGINATION -->
-                <div class="pagination">
-                    <ul id="previous col-xs-6">
-                        <li><a href="#"><i class="fa fa-chevron-left"></i></a></li>
-                    </ul>
-                    <ul class="hidden-xs">
-                        <li class="active"><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                    </ul>
-                    <ul id="next col-xs-6">
-                        <li><a href="#"><i class="fa fa-chevron-right"></i></a></li>
-                    </ul>
-                </div>
+                <% if $Results.MoreThanOnePage %>
+                    <div class="pagination">
+                        <% if $Results.NotFirstPage %>
+                            <ul id="previous col-xs-6">
+                                <li><a href="$Results.PrevLink"><i class="fa fa-chevron-left"></i></a></li>
+                            </ul>
+                        <% end_if %>
+                        <ul class="hidden-xs">
+                            <% loop $Results.PaginationSummary %> <!--Lastly, if we have a lot of pages, it might break the UI. Instead of $Results.Pages, let's use Results.PaginationSummary, which will just show us some of the nearby pages to the active one. In other words, we don't need to see page 17 of 30 if we're on page 2.-->
+                                <% if $Link %>
+                                    <li <% if $CurrentBool %>class="active"<% end_if %>><a href="$Link">$PageNum</a></li>
+                                <% else %>
+                                    <li>...</li>
+                                <% end_if %>
+                            <% end_loop %>
+                        </ul>
+                        <% if $Results.NotLastPage %>
+                            <ul id="next col-xs-6">
+                                <li><a href="$Results.NextLink"><i class="fa fa-chevron-right"></i></a></li>
+                            </ul>
+                        <% end_if %>
+                    </div>
+                <% end_if %>
                 <!-- END PAGINATION -->
 
             </div>
@@ -95,11 +111,16 @@
                 <div class="chzn-container-multi">
                     <ul class="chzn-choices">
                         <li class="search-choice"><span>New York</span><a href="#" class="search-choice-close"></a></li>
-                        <li class="search-choice"><span>Residential</span><a href="#" class="search-choice-close"></a></li>
-                        <li class="search-choice"><span>3 bedrooms</span><a href="#" class="search-choice-close"></a></li>
-                        <li class="search-choice"><span>2 bathrooms</span><a href="#" class="search-choice-close"></a></li>
-                        <li class="search-choice"><span>Min. $150</span><a href="#" class="search-choice-close"></a></li>
-                        <li class="search-choice"><span>Min. $400</span><a href="#" class="search-choice-close"></a></li>
+                        <li class="search-choice"><span>Residential</span><a href="#" class="search-choice-close"></a>
+                        </li>
+                        <li class="search-choice"><span>3 bedrooms</span><a href="#" class="search-choice-close"></a>
+                        </li>
+                        <li class="search-choice"><span>2 bathrooms</span><a href="#" class="search-choice-close"></a>
+                        </li>
+                        <li class="search-choice"><span>Min. $150</span><a href="#" class="search-choice-close"></a>
+                        </li>
+                        <li class="search-choice"><span>Min. $400</span><a href="#" class="search-choice-close"></a>
+                        </li>
                     </ul>
                 </div>
                 $PropertySearchForm
@@ -111,7 +132,7 @@
                     <li class="col-md-12">
                         <div class="image">
                             <a href="blog-detail.html"></a>
-                            <img src="http://placehold.it/100x100" alt="" />
+                            <img src="http://placehold.it/100x100" alt=""/>
                         </div>
 
                         <ul class="top-info">
@@ -123,7 +144,7 @@
                     <li class="col-md-12">
                         <div class="image">
                             <a href="blog-detail.html"></a>
-                            <img src="http://placehold.it/100x100" alt="" />
+                            <img src="http://placehold.it/100x100" alt=""/>
                         </div>
 
                         <ul class="top-info">
@@ -135,14 +156,15 @@
                     <li class="col-md-12">
                         <div class="image">
                             <a href="blog-detail.html"></a>
-                            <img src="http://placehold.it/100x100" alt="" />
+                            <img src="http://placehold.it/100x100" alt=""/>
                         </div>
 
                         <ul class="top-info">
                             <li><i class="fa fa-calendar"></i> July 05, 2014</li>
                         </ul>
 
-                        <h4><a href="blog-detail.html">House, location or price: What's the most important factor?</a></h4>
+                        <h4><a href="blog-detail.html">House, location or price: What's the most important factor?</a>
+                        </h4>
                     </li>
                 </ul>
                 <!-- END LATEST NEWS -->
@@ -150,10 +172,12 @@
                 <!-- BEGIN NEWSLETTER -->
                 <div id="newsletter" class="col-sm-12">
                     <h2 class="section-title">Subscribe our weekly<br><span>Newsletter</span></h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit lorem ipsum dolor sit amet consectetur
+                        adipiscing elit.</p>
 
                     <div class="input-group">
-                        <input type="text" placeholder="Enter your E-mail" name="newsletter_email" id="newsletter_email" class="form-control" />
+                        <input type="text" placeholder="Enter your E-mail" name="newsletter_email" id="newsletter_email"
+                               class="form-control"/>
                         <span class="input-group-btn">
 							<button class="btn btn-default-color" type="button">Subscribe</button>
 						</span>
