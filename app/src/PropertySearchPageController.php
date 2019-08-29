@@ -41,7 +41,7 @@ class PropertySearchPageController extends PageController
 
         }
 
-        /*if ($bedrooms = $request->getVar('Bedrooms')) {
+        if ($bedrooms = $request->getVar('Bedrooms')) {
             $properties = $properties->filter([
                 'Bedrooms:GreaterThanOrEqual' => $bedrooms
             ]);
@@ -63,9 +63,9 @@ class PropertySearchPageController extends PageController
             $properties = $properties->filter([
                 'PricePerNight:LessThanOrEqual' => $maxPrice
             ]);
-        }*/
+        }
 
-        $filters = [
+        /*$filters = [
             ['Bedrooms', 'Bedrooms', 'GreaterThanOrEqual'],
             ['Bathrooms', 'Bathrooms', 'GreaterThanOrEqual'],
             ['MinPrice', 'PricePerNight', 'GreaterThanOrEqual'],
@@ -79,18 +79,25 @@ class PropertySearchPageController extends PageController
                     "{$field}:{$filter}" => $value
                 ]);
             }
-        }
+        }*/
 
         $paginatedProperties = PaginatedList::create(
             $properties,
             $request
         )
             ->setPageLength(2)
-            ->setPaginationGetVar('s');;
+            ->setPaginationGetVar('s');
 
-        return [
+        $data = [
             'Results' => $paginatedProperties
         ];
+
+        if ($request->isAjax()) {
+            return $this->customise($data)
+                        ->renderWith('Includes/PropertySearchResults');
+        }
+
+        return $data;
     }
 
     public function PropertySearchForm()
